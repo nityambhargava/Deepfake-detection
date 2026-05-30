@@ -17,4 +17,4 @@ services:
       - key: DETECTOR_OUTPUT
         value: ./detector_output
       - key: ALLOWED_ORIGINS
-        value: https://your-vercel-app.vercel.app
+        value: https://deepfake-detection-tzl7.onrender.com
