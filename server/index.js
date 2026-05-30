@@ -30,14 +30,9 @@ app.get("/api/health", (_req, res) =>
   res.json({ status: "ok", ts: new Date().toISOString() })
 );
 
-// Production: serve compiled React
-if (process.env.NODE_ENV === "production") {
-  const clientDist = path.join(__dirname, "../client/dist");
-  app.use(express.static(clientDist));
-  app.get("*", (_req, res) =>
-    res.sendFile(path.join(clientDist, "index.html"))
-  );
-}
+app.get("/", (_req, res) => {
+  res.json({ status: "DeepTrace API is running", endpoints: ["POST /api/detect", "GET /api/health"] });
+});
 
 // Global error handler
 app.use((err, _req, res, _next) => {
