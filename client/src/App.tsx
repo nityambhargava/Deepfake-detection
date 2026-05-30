@@ -14,7 +14,8 @@ export default function App() {
       const form = new FormData();
       form.append("image", file);
       setState({ phase: "analysing" });
-      const res = await fetch("/api/detect", { method: "POST", body: form });
+      const API = import.meta.env.VITE_API_URL ?? "";
+      const res = await fetch(`${API}/api/detect`, { method: "POST", body: form });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: res.statusText }));
         throw new Error(err.error || "Detection failed.");

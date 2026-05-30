@@ -1,0 +1,95 @@
+{
+  "image_path": "/workspaces/Deepfake-detection/server/uploads/b7f03b9f-19b7-4663-a7ca-7e57a2d002b4.webp",
+  "classification": "FAKE",
+  "fakeness_percentage": 52.45,
+  "verdict_summary": "Image appears to have been partially altered (fakeness 52.5%). Inconsistencies in noise, ELA, or ghost patterns indicate manual or AI-assisted manipulation.",
+  "highlighted_image": "/workspaces/Deepfake-detection/server/detector_output/b7f03b9f-19b7-4663-a7ca-7e57a2d002b4_highlighted.jpg",
+  "probe_scores": [
+    {
+      "probe": "ELA",
+      "raw_score": 0.0487,
+      "weight": 0.28,
+      "description": "JPEG re-compression error levels"
+    },
+    {
+      "probe": "Frequency",
+      "raw_score": 0.9659,
+      "weight": 0.18,
+      "description": "FFT spectral fingerprint anomaly"
+    },
+    {
+      "probe": "NoiseConsistency",
+      "raw_score": 0.302,
+      "weight": 0.18,
+      "description": "PRNU-based noise uniformity"
+    },
+    {
+      "probe": "JPEGGhost",
+      "raw_score": 0.9754,
+      "weight": 0.14,
+      "description": "Multi-quality ghost artefacts"
+    },
+    {
+      "probe": "Metadata",
+      "raw_score": 0.7,
+      "weight": 0.12,
+      "description": "EXIF provenance analysis"
+    },
+    {
+      "probe": "ColourGradient",
+      "raw_score": 0.6214,
+      "weight": 0.1,
+      "description": "Colour entropy & gradient coherence"
+    }
+  ],
+  "altered_regions": [
+    {
+      "region_id": 1,
+      "x": 446,
+      "y": 442,
+      "width": 16,
+      "height": 23,
+      "area_px": 238,
+      "confidence": 0.336
+    },
+    {
+      "region_id": 2,
+      "x": 368,
+      "y": 322,
+      "width": 20,
+      "height": 20,
+      "area_px": 265,
+      "confidence": 0.35
+    },
+    {
+      "region_id": 3,
+      "x": 394,
+      "y": 281,
+      "width": 68,
+      "height": 159,
+      "area_px": 5284,
+      "confidence": 0.333
+    },
+    {
+      "region_id": 4,
+      "x": 0,
+      "y": 0,
+      "width": 462,
+      "height": 465,
+      "area_px": 188637,
+      "confidence": 0.333
+    },
+    {
+      "region_id": 5,
+      "x": 0,
+      "y": 0,
+      "width": 38,
+      "height": 54,
+      "area_px": 1301,
+      "confidence": 0.096
+    }
+  ],
+  "metadata_exif": {
+    "exif": "absent"
+  }
+}
