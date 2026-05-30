@@ -11,10 +11,23 @@ const app  = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:5173"],
+  origin: function (origin, callback) {
+    const allowed = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
+      : ["http://localhost:5173"];
+
+    // Allow requests with no origin (Render health checks, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error(`[cors] blocked origin: ${origin}`);
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
   methods: ["GET", "POST"],
+  credentials: true,
 }));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json());
