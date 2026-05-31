@@ -26,6 +26,10 @@ const upload = multer({
 });
 
 router.post("/detect", upload.single("image"), async (req, res, next) => {
+  // Setting a 90 second timeout on the response
+  req.setTimeout(90_000);
+  res.setTimeout(90_000);
+
   const uploadedPath = req.file?.path;
   if (!uploadedPath)
     return res.status(400).json({ error: "No image. Use multipart/form-data field image." });

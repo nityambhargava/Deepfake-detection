@@ -44,6 +44,22 @@ app.get("/", (_req, res) =>
   })
 );
 
+// ── Keep Render service warm ────────────────────────────────────
+if (process.env.NODE_ENV === "production") {
+  const SELF = process.env.RENDER_EXTERNAL_URL;
+
+  if (SELF) {
+    setInterval(async () => {
+      try {
+        await fetch(`${SELF}/api/health`);
+        console.log("[ping] keep-alive sent");
+      } catch (e) {
+        console.error("[ping] failed:", e.message);
+      }
+    }, 14 * 60 * 1000);
+  }
+}
+
 // ── Global error handler ────────────────────────────────────────
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;
