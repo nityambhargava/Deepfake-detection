@@ -60,7 +60,11 @@ export default function ImageOverlay({ previewUrl, alteredRegions, highlightedUr
             {!loaded && <img src={previewUrl} alt="" className="w-full h-auto" onLoad={()=>setLoaded(true)}/>}
           </>
         ) : (
-          <img src={highlightedUrl!} alt="Server result" className="w-full h-auto max-h-[480px] object-contain"/>
+          <img
+            src={`${import.meta.env.VITE_API_URL ?? ""}${highlightedUrl}`}
+            alt="Server result"
+            className="w-full h-auto max-h-[480px] object-contain"
+          />
         )}
       </div>
       {alteredRegions.length>0 && showOverlay && (

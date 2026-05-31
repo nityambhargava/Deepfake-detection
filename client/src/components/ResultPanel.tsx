@@ -45,7 +45,11 @@ export default function ResultPanel({ result, previewUrl, onReset }: Props) {
       )}
       {highlighted_image_url && (
         <div className="flex justify-end">
-          <a href={highlighted_image_url} download className="btn-ghost text-sm">↓ Download highlighted image</a>
+          <a>
+            href={`${import.meta.env.VITE_API_URL ?? ""}${highlighted_image_url}`}
+            download
+            className="btn-ghost text-sm"  
+          </a>
         </div>
       )}
     </div>
