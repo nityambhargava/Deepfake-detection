@@ -657,7 +657,19 @@ class DeepfakeDetector:
             raise FileNotFoundError(f"Image not found: {image_path}")
 
         log.info("Loading image: %s", path.name)
+
+        # ── Resize large images before analysis ──────────────────────
+        # Keeps analysis under 30s on free-tier servers
         pil_img = Image.open(path).convert("RGB")
+        MAX_DIM = 800
+        w, h = pil_img.size
+        if max(w, h) > MAX_DIM:
+            ratio = MAX_DIM / max(w, h)
+            new_w, new_h = int(w * ratio), int(h * ratio)
+            pil_img = pil_img.resize((new_w, new_h), Image.LANCZOS)
+            pil_img.save(str(path))   # overwrite with resized version
+            log.info("Resized %dx%d → %dx%d for analysis", w, h, new_w, new_h)
+        
         cv_img  = cv2.imread(str(path))
         if cv_img is None:
             raise ValueError(f"OpenCV could not decode: {image_path}")
