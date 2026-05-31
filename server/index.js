@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -10,50 +9,49 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({
-  origin: function (origin, callback) {
-    const allowed = process.env.ALLOWED_ORIGINS
-      ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
-      : ["http://localhost:5173"];
+// ── CORS – manual headers (works on all environments) ──────────
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") return res.sendStatus(200);
+  next();
+});
 
-    // Allow requests with no origin (Render health checks, curl, etc.)
-    if (!origin) return callback(null, true);
-
-    if (allowed.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.error(`[cors] blocked origin: ${origin}`);
-      callback(new Error(`Origin ${origin} not allowed by CORS`));
-    }
-  },
-  methods: ["GET", "POST"],
-  credentials: true,
-}));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json());
 
-// Serve generated ELA maps and highlighted images
-app.use("/output", express.static(
-  path.join(__dirname, process.env.DETECTOR_OUTPUT || "detector_output"),
-  { maxAge: "1h", etag: true }
-));
+// ── Static – detector output images (ELA map, highlighted) ─────
+app.use(
+  "/output",
+  express.static(
+    path.join(__dirname, process.env.DETECTOR_OUTPUT || "detector_output"),
+    { maxAge: "1h", etag: true }
+  )
+);
 
+// ── API routes ──────────────────────────────────────────────────
 app.use("/api", detectRouter);
+
 app.get("/api/health", (_req, res) =>
   res.json({ status: "ok", ts: new Date().toISOString() })
 );
 
-app.get("/", (_req, res) => {
-  res.json({ status: "DeepTrace API is running", endpoints: ["POST /api/detect", "GET /api/health"] });
-});
+app.get("/", (_req, res) =>
+  res.json({
+    status: "DeepTrace API is running",
+    endpoints: ["POST /api/detect", "GET /api/health"],
+  })
+);
 
-// Global error handler
+// ── Global error handler ────────────────────────────────────────
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;
   console.error(`[error] ${status}:`, err.message);
   res.status(status).json({ error: err.message || "Internal server error" });
 });
 
+// ── Boot ────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n🔍  DeepTrace API running → http://localhost:${PORT}\n`);
 });
